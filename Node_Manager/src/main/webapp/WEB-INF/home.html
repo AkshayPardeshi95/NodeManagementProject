@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1" charset="ISO-8859-1">
+<title>Node Manager</title>
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<link rel="stylesheet" href="Table_Style.css">
+<style>
+
+tr:hover{
+	background-color: #ddd}
+
+tbody {
+    overflow-y: auto;    /* Trigger vertical scroll    */
+    overflow-x: hidden;  /* Hide the horizontal scroll */
+}
+th {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  text-align: left;
+  background-color: #f2f2f2	;
+  color: black;}
+ 
+td ,tr, th{
+	padding:7px; border:grey 1px solid;
+}	
+	
+table{
+		width:95%; 
+		border-collapse:collapse; 
+		margin-left: 20px;
+		margin-right: 20px;
+		font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+		text-align:center;
+		position: relative;
+	}
+	
+body {font-family: Arial, Helvetica, sans-serif;}
+
+/* The Modal (background) */
+.modal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  padding-top: 100px; /* Location of the box */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+/* The Add Modal (background) */
+.addModal{
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  padding-top: 100px; /* Location of the box */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+/* The Export Modal (background) */
+.exportModal{
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  padding-top: 100px; /* Location of the box */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+/* The Export Modal (background) */
+.noteModal{
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  padding-top: 100px; /* Location of the box */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+/* Modal Content */
+.modal-content {
+  background-color: #fefefe;
+  margin: auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%;
+}
+
+/* Add Modal Content */
+.addModal-content {
+  background-color: #fefefe;
+  margin: auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%;
+}
+
+/* Export Modal Content */
+.exportModal-content {
+  background-color: #fefefe;
+  margin: auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%;
+}
+
+/* Note Modal Content */
+.noteModal-content {
+  background-color: #fefefe;
+  margin: auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%;
+}
+
+/* The Close Button */
+.close {
+  color: #aaaaaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: #000;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+/* The Add Close Button */
+.closeAdd {
+  color: #aaaaaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.closeAdd:hover,
+.closeAdd:focus {
+  color: #000;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+/* The Export Close Button */
+.closeExport {
+  color: #aaaaaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.closeExport:hover,
+.closeExport:focus {
+  color: #000;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+/* The Note Close Button */
+.closeNote {
+  color: #aaaaaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.closeNote:hover,
+.closeNote:focus {
+  color: #000;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+/*Search*/
+input[type=text] {
+  width: 300px;
+  box-sizing: border-box;
+  border: 2px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
+  background-color: white;
+  background-position: 10px 10px; 
+  background-repeat: no-repeat;
+  padding: 12px 20px 12px 40px;
+  height: 40px;
+  margin-bottom:10px;
+}
+
+.styled-select select {
+   background: transparent;
+   border: none;
+   font-size: 14px;
+   height: 29px;
+   padding: 5px; /* If you add too much padding here, the options won't show in IE */
+   width: 268px;
+}
+
+.styled-select.slate {
+   background: url(http://i62.tinypic.com/2e3ybe1.jpg) no-repeat right center;
+   height: 34px;
+   width: 240px;
+}
+
+.styled-select.slate select {
+   border: 1px solid #ccc;
+   font-size: 16px;
+   height: 34px;
+   width: 268px;
+}
+
+
+</style>
+</head>
+
+
+<body>
+<h6 style="float:right; margin-right:50px">Hello Admin</h6>
+<H3 style="margin-left:20px;">Welcome to OCC Node Manager</H3>
+<hr style="height:1px;border:none;color:#333;background-color:#333;"/>
+
+ <div>
+ 	<p style="color:green;margin-left:15px;float:left;" th:text="${message}"/>
+	<p style="color:red;margin-left:15px;float:left;" th:text="${errorMessage}"/>
+ 	<a th:href="@{/logout}"><button class="w3-button w3-blue" id="login_button" style="position:relative;height:20%;margin-left:10px;margin-right:50px; float:right">Logout</button></a>
+  	<button class="w3-button w3-blue" id="export_button" style="position:relative;height:20%;margin-left:10px;margin-right:10px; float:right">Export To Excel</button>
+ 	<p><button  style="position:relative;height:20%;float:right; margin-right:10px; margin-bottom:10px;" class="w3-button w3-green" onclick="openForm()" id="addButton" >Add Node</button></p>
+  	<input height="20" style="float:right; margin-right:10px;position:relative" type="text" id="myInput" onkeyup="myFunction()" placeholder="Search...">
+</div>
+	<table id="myTable" class="myTable">
+    <thead>	
+      <tr>	
+      	<th width="10">Notes</th>
+     	<th>Name</th>
+        <th>Activity Name</th>
+        <th>Owner</th>
+        <th>Assigned By</th>
+        <th>Build Installed</th>
+        <th>Type</th>
+        <th>Option</th>
+        <th style="width:50px;">Remove</th>
+       </tr>
+      </thead>
+     <tbody>
+      <tr th:if="${data==null}">
+      		<td></td>
+      		<td>	No Node(s) added to the list</td>
+      		<td></td>
+      		<td></td>
+      		<td></td>
+      		<td></td>
+      		<td></td>
+      		<td></td>
+      		<td></td>
+      </tr>
+      
+      <tr th:if="${data!=null}" class="B" th:each="node : ${data}" >
+       <td><a th:data1="${node.name}" th:noteData="${node.note}" th:onclick="'javascript:openNotes(this.getAttribute(\'data1\'),this.getAttribute(\'noteData\'));'"><span><img th:src="@{/images/note.png}" height="25"/></span></a> </td>
+      	
+        <td class="w3-button w3-white" th:name="${node.name}" th:act="${node.assignedActivity}" th:owner="${node.owner}" th:assigned="${node.assignedBy}" th:build="${node.installedBuild}"  th:if="${node.State == 'BUSY'}" th:onclick="'javascript:openFormWithData(this.getAttribute(\'name\'),this.getAttribute(\'act\'),this.getAttribute(\'owner\'),this.getAttribute(\'assigned\'),this.getAttribute(\'build\'));'" th:text="${node.name}"  />
+     	<td th:if="${node.State == 'BUSY'}" th:text="${node.assignedActivity}"/>
+      	<td th:if="${node.State == 'BUSY'}" th:text="${node.owner}"/>
+        <td th:if="${node.State == 'BUSY'}" th:text="${node.assignedBy}"/>
+        <td th:if="${node.State == 'BUSY'}" th:text="${node.installedBuild}"/>
+        <td th:if="${node.State == 'BUSY'}" th:text="${node.nodeType}"/>
+        <td th:if="${node.State == 'BUSY'}"><a th:href="@{'/securedHome/release/' + ${node.name}}"  ><button>UnAssign</button></a></td>
+      	<td th:if="${node.State == 'BUSY'}" ><a th:href="@{'/securedHome/delete/' + ${node.name}}"  ><span>&times;</span></a></td>
+      	
+      	<td th:if="${node.State == 'FREE'}" th:text="${node.name}" style="background-color: #00FA9A; "/>
+      	<td th:if="${node.State == 'FREE'}" th:text="FREE" style="background-color: #00FA9A"/>
+      	<td th:if="${node.State == 'FREE'}" style="background-color: #00FA9A"/>
+      	<td th:if="${node.State == 'FREE'}" style="background-color: #00FA9A"/>
+      	<td th:if="${node.State == 'FREE'}" style="background-color: #00FA9A"/>
+      	<td th:if="${node.State == 'FREE'}" th:text="${node.nodeType}" style="background-color: #00FA9A"/>
+      	<td style="background-color: #00FA9A" th:if="${node.State == 'FREE'}"><button th:data1="${node.name}" th:onclick="'javascript:openForm(this.getAttribute(\'data1\'));'" >Assign</button></td>
+      	
+      	<td th:if="${node.State == 'FREE'}" style="background-color: #00FA9A" ><span><a th:href="@{'/securedHome/delete/' + ${node.name}}">&times;</a></span></td>
+      </tr>
+     </tbody>
+   </table>
+	
+   <!-- The Modal -->
+<div id="myModal" class="modal">
+
+  <!-- Modal content -->
+  <div class="modal-content">
+    <span class="close">&times;</span>
+    
+    <form action="#" th:action="@{/securedHome/node}" th:object="${node}" method="post" name="Node_Add_Form">
+    
+    	Node Name: <input type="text" th:field="*{name}"/>
+    	<p class="styled-select.slate">Activity Type: 
+    	<select name="Activity_Type" style="width:100px" size="3" required>
+   			<option th:value="'PC'" th:text="'PC'" />
+    		<option th:value="'BUC'" th:text="'BUC'" />
+    		<option th:value="'TR'" th:text="'TR'"/>
+		</select></p>
+    	<p>Activity Name: <input type="text" th:field="*{assignedActivity}" required/></p>
+    	<p >
+    	Assign To: <select th:field="*{owner}" >
+   			<option value="0" selected>select Member</option>
+    		<option th:each="member : ${members}" th:value="${member.name}" th:text="${member.name}"></option>
+    		</select>
+		</p>
+    	<p>
+    	Assigned By: <select th:field="*{assignedBy}" required>
+   			<option value="0" selected>select Member</option>
+    		<option th:each="member : ${members}" th:value="${member.name}" th:text="${member.name}"></option>
+    	</select></p>
+    	<p>Installed Build no: <input type="text" th:field="*{installedBuild}" /></p>
+        <p><input type="submit" value="Assign" class="w3-button w3-green" /></p>
+    </form>
+    
+  </div>
+
+</div>
+
+   <!-- The Modal -->
+<div id="myAddModel" class="addModal">
+
+  <!-- Modal content -->
+  <div class="addModal-content">
+    <span class="closeAdd">&times;</span>
+    
+    <form action="#" th:action="@{/securedHome/addForm}" th:object="${node}" method="post" name="form1">
+    
+    	Node Name:<input type="text" th:field="*{name}" required/>
+    	<p> Node Type: 
+    	<select th:field="*{nodeType}">
+   			<option th:value="'BM'" th:text="'Bare Metal(BM)'"/>
+    		<option th:value="'VM'" th:text="'Virtual Machine(VM)'"/>
+		</select>
+		</p>
+        <p><input type="submit" value="Add Node" class="w3-button w3-green" onclick="return alphanumeric()"/> <input type="reset" class="w3-button w3-green" value="Reset" /></p>
+    </form>
+    
+  </div>
+
+</div>
+
+  <!-- The Modal -->
+<div id="myNoteModel" class="noteModal">
+
+  <!-- Modal content -->
+  <div class="noteModal-content">
+    <span class="closeNote">&times;</span>
+    
+    <form action="#" th:action="@{/securedHome/note}" th:object="${node}" method="post" name="form2">
+    
+    	Node Name:<input type="text" th:field="*{name}"/>
+    	<p> Add a Note: 
+    	<textarea th:field="*{note}"></textarea>
+		</p>
+        <p><input type="submit" value="Add/Update Note" class="w3-button w3-green" /> </p>
+    </form>
+    
+  </div>
+
+</div>
+
+  <!-- The Modal -->
+<div id="myExportModel" class="exportModal">
+
+  <!-- Modal content -->
+  <div class="exportModal-content">
+    <span class="closeExport">&times;</span>
+    
+    <form action="#" th:action="@{/securedHome/download/NodeDetails.csv}" method="post" >
+    
+    	<p> Select filter type: 
+    	<select name="filter">
+    		<option th:value="'ALL'" th:text="'All'"/>
+    		<option th:value="'BM'" th:text="'All Bare Metal(BM) nodes'"/>
+   			<option th:value="'VM'" th:text="'All Virtual Machine(VM) nodes'"/>
+    		<option th:value="'FREE'" th:text="'All free nodes'"/>
+    		<option th:value="'PC'" th:text="'All PC nodes'"/>
+    		<option th:value="'TR'" th:text="'All TR nodes'"/>
+    		<option th:value="'BUC'" th:text="'All BUC nodes'"/>
+    	</select>
+		</p>
+		<p><input type="submit" value="Export" onclick="close()" class="w3-button w3-blue" /></p>
+    </form>
+  </div>
+</div>
+</body>
+
+<script th:inline="javascript">
+//Get the modal
+var modal = document.getElementById('myModal');
+
+var add_modal = document.getElementById('myAddModel');
+
+var export_modal = document.getElementById('myExportModel');
+var note_modal = document.getElementById('myNoteModel');
+
+var oForm = document.forms['Node_Add_Form'];
+
+// Get the button that opens the modal
+var btn = document.getElementById("addButton");
+
+var exp_btn= document.getElementById("export_button");
+
+// Get the <span> element that closes the modal
+var span = document.getElementsByClassName("close")[0];
+
+var addSpan = document.getElementsByClassName("closeAdd")[0];
+
+var expSpan = document.getElementsByClassName("closeExport")[0];
+var noteSpan = document.getElementsByClassName("closeNote")[0];
+
+// When the user clicks the button, open the modal 
+btn.onclick = function() {
+	add_modal.style.display = "block";
+}
+
+exp_btn.onclick = function() {
+	export_modal.style.display = "block";
+}
+
+function openForm(nodeName)
+{
+	oForm.elements[0].value=nodeName;
+	oForm.elements[1].value="";
+	oForm.elements[2].value="";
+	oForm.elements[3].value="";
+	oForm.elements[4].value="";
+	oForm.elements[5].value="";
+	oForm.elements[0].readOnly=true;
+	oForm.elements[1].disabled=false;
+	oForm.elements[2].readOnly=false;
+	modal.style.display = "block";
+	
+}
+
+function openNotes(nodeName, note)
+{
+	var oForm = document.forms['form2'];
+	oForm.elements[0].value=nodeName;
+	oForm.elements[1].value=(note=="" || note==null)?"":note;
+	oForm.elements[0].readOnly=true;
+	note_modal.style.display = "block";
+}
+function openFormWithData(name,act,owner,assigned,build)
+{
+	oForm.elements[0].value=name;
+	oForm.elements[1].value=(act=="" || act==null)?"":act.split(":")[0];
+	oForm.elements[2].value=act;
+	oForm.elements[3].value=owner;
+	oForm.elements[4].value=assigned;
+	oForm.elements[5].value=build;
+	oForm.elements[0].readOnly=true;
+	if(act!=null || act!="")
+		{
+			oForm.elements[1].disabled=true;
+			oForm.elements[2].readOnly=true;
+		}
+		
+	
+	modal.style.display = "block";
+}
+
+// When the user clicks on <span> (x), close the modal
+span.onclick = function() {
+  modal.style.display = "none";
+}
+
+addSpan.onclick = function() {
+	add_modal.style.display = "none";
+}
+
+expSpan.onclick = function() {
+	export_modal.style.display = "none";
+}
+
+noteSpan.onclick = function() {
+	note_modal.style.display = "none";
+}
+// When the user clicks anywhere outside of the modal, close it
+window.onclick = function(event) {
+  if (event.target == modal) {
+    modal.style.display = "none";
+  }
+}
+//When the user clicks anywhere outside of the modal, close it
+window.onclick = function(event) {
+  if (event.target == add_modal) {
+	  add_modal.style.display = "none";
+  }
+}
+
+window.onclick = function(event) {
+	  if (event.target == export_modal) {
+		  export_modal.style.display = "none";
+	  }
+	}
+	
+window.onclick = function(event) {
+	  if (event.target == note_modal) {
+		  note_modal.style.display = "none";
+	  }
+	}
+
+function close()
+{
+	export_modal.style.display="none";
+		
+}
+function myFunction() {
+	  // Declare variables 
+	  var input, filter, table, tr, td, i, txtValue;
+	  input = document.getElementById("myInput");
+	  filter = input.value.toUpperCase();
+	  table = document.getElementById("myTable");
+	  tr = table.getElementsByTagName("tr");
+
+	  // Loop through all table rows, and hide those who don't match the search query
+	for (i = 1; i < tr.length; i++) {
+    var filtered = false;
+    var tds = tr[i].getElementsByTagName("td");
+    for(t=0; t<tds.length; t++) {
+        var td = tds[t];
+        if (td) {
+          if (td.innerHTML.toUpperCase().indexOf(filter) > -1) {
+            filtered = true;
+          }
+        }     
+    }
+    if(filtered===true) {
+        tr[i].style.display = '';
+    }
+    else {
+        tr[i].style.display = 'none';
+    }
+  }
+ }
+
+function alphanumeric()
+{ 
+	var oForm = document.forms['form1'];
+	var letters = /^[0-9a-zA-Z]+$/;
+	if(oForm[0].value.match(letters))
+	{
+		oForm[0].focus();
+		return true;
+	}
+	else
+	{
+		alert('Please enter alphanumeric node name.');
+		return false;
+	}
+}
+</script>
+</html>

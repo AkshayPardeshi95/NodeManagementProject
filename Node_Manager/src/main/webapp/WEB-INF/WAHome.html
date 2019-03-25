@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1" charset="ISO-8859-1">
+<title>Node Manager</title>
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<link rel="stylesheet" href="Table_Style.css">
+<style>
+
+tr:hover{
+	background-color: #ddd}
+
+tbody {
+    overflow-y: auto;    /* Trigger vertical scroll    */
+    overflow-x: hidden;  /* Hide the horizontal scroll */
+}
+th {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  text-align: left;
+  background-color: #f2f2f2	;
+  color: black;}
+ 
+td ,tr, th{
+	padding:7px; border:grey 1px solid;
+}	
+	
+table{
+		width:95%; 
+		border-collapse:collapse; 
+		margin-left: 20px;
+		margin-right: 20px;
+		font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+		text-align:center;
+		position: relative;
+	}
+	
+body {font-family: Arial, Helvetica, sans-serif;}
+
+/* The Export Modal (background) */
+.noteModal{
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  padding-top: 100px; /* Location of the box */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+/* Note Modal Content */
+.noteModal-content {
+  background-color: #fefefe;
+  margin: auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%;
+}
+
+
+/* The Note Close Button */
+.closeNote {
+  color: #aaaaaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.closeNote:hover,
+.closeNote:focus {
+  color: #000;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+/*Search*/
+input[type=text] {
+  width: 300px;
+  box-sizing: border-box;
+  border: 2px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
+  background-color: white;
+  background-position: 10px 10px; 
+  background-repeat: no-repeat;
+  padding: 12px 20px 12px 40px;
+  height: 40px;
+  margin-bottom:10px;
+}
+
+
+
+</style>
+</head>
+
+
+<body>
+<div>
+<h6 style="float:right; margin-right:50px">Hello User</h6>
+<H3 style="margin-left:20px;">Welcome to OCC Node Manager</H3>
+</div>
+<hr style="height:1px;border:none;color:#333;background-color:#333;"/>
+
+ <div>
+	<p style="color:green;margin-left:15px;float:left;" th:text="${message}"/>
+	<p style="color:red;margin-left:15px;float:left;" th:text="${errorMessage}"/>
+ 	<a th:href="@{/logout}"><button class="w3-button w3-blue" id="login_button" style="position:relative;height:20%;margin-left:10px;margin-right:50px; float:right">Logout</button></a>
+  	<input height="20" style="float:right; margin-right:10px;position:relative" type="text" id="myInput" onkeyup="myFunction()" placeholder="Search...">
+</div>
+	<table id="myTable" class="myTable">
+    <thead>	
+      <tr>	
+      	<th width="10">Notes</th>
+     	<th>Name</th>
+        <th>Activity Name</th>
+        <th>Owner</th>
+        <th>Assigned By</th>
+        <th>Build Installed</th>
+        <th>Type</th>
+       </tr>
+      </thead>
+     <tbody>
+      <tr th:if="${data==null}">
+      		<td></td>
+      		<td>	No Node(s) added to the list</td>
+      		<td></td>
+      		<td></td>
+      		<td></td>
+      		<td></td>
+      		<td></td>
+      </tr>
+      
+      <tr th:if="${data!=null}" class="B" th:each="node : ${data}" >
+       	<td>
+       	<a th:data1="${node.name}" th:noteData="${node.note}" th:onclick="'javascript:openNotes(this.getAttribute(\'data1\'),this.getAttribute(\'noteData\'));'">
+       	<span><img src="../src/main/resources/static/images/note.png" height="25" th:src="@{images/note.png}" alt="notes_img"/></span>
+       	</a>
+       	</td>
+      	
+        <td th:name="${node.name}" th:if="${node.State == 'BUSY'}" th:text="${node.name}"  />
+     	<td th:if="${node.State == 'BUSY'}" th:text="${node.assignedActivity}"/>
+      	<td th:if="${node.State == 'BUSY'}" th:text="${node.owner}"/>
+        <td th:if="${node.State == 'BUSY'}" th:text="${node.assignedBy}"/>
+        <td th:if="${node.State == 'BUSY'}" th:text="${node.installedBuild}"/>
+        <td th:if="${node.State == 'BUSY'}" th:text="${node.nodeType}"/>
+       
+      	<td th:if="${node.State == 'FREE'}" th:text="${node.name}" style="background-color: #00FA9A; "/>
+      	<td th:if="${node.State == 'FREE'}" th:text="FREE" style="background-color: #00FA9A"/>
+      	<td th:if="${node.State == 'FREE'}" style="background-color: #00FA9A"/>
+      	<td th:if="${node.State == 'FREE'}" style="background-color: #00FA9A"/>
+      	<td th:if="${node.State == 'FREE'}" style="background-color: #00FA9A"/>
+      	<td th:if="${node.State == 'FREE'}" th:text="${node.nodeType}" style="background-color: #00FA9A"/>
+      </tr>
+     </tbody>
+   </table>
+	
+  <!-- The Modal -->
+<div id="myNoteModel" class="noteModal">
+
+  <!-- Modal content -->
+  <div class="noteModal-content">
+    <span class="closeNote">&times;</span>
+    
+    <form action="#" th:action="@{/note}" th:object="${node}" method="post" name="form2">
+    
+    	Node Name:<input type="text" th:field="*{name}"/>
+    	<p> Add a Note: 
+    	<textarea th:field="*{note}"></textarea>
+		</p>
+        <p><input type="submit" value="Add/Update Note" class="w3-button w3-green" /> </p>
+    </form>
+    
+  </div>
+
+</div>
+</body>
+
+<script th:inline="javascript">
+//Get the modal
+var note_modal = document.getElementById('myNoteModel');
+
+var noteSpan = document.getElementsByClassName("closeNote")[0];
+
+function openNotes(nodeName, note)
+{
+	var oForm = document.forms['form2'];
+	oForm.elements[0].value=nodeName;
+	oForm.elements[1].value=(note=="" || note==null)?"":note;
+	oForm.elements[0].readOnly=true;
+	note_modal.style.display = "block";
+}
+
+noteSpan.onclick = function() {
+	note_modal.style.display = "none";
+}
+
+window.onclick = function(event) {
+	  if (event.target == note_modal) {
+		  note_modal.style.display = "none";
+	  }
+	}
+
+function myFunction() {
+	  // Declare variables 
+	  var input, filter, table, tr, td, i, txtValue;
+	  input = document.getElementById("myInput");
+	  filter = input.value.toUpperCase();
+	  table = document.getElementById("myTable");
+	  tr = table.getElementsByTagName("tr");
+
+	  // Loop through all table rows, and hide those who don't match the search query
+	for (i = 1; i < tr.length; i++) {
+    var filtered = false;
+    var tds = tr[i].getElementsByTagName("td");
+    for(t=0; t<tds.length; t++) {
+        var td = tds[t];
+        if (td) {
+          if (td.innerHTML.toUpperCase().indexOf(filter) > -1) {
+            filtered = true;
+          }
+        }     
+    }
+    if(filtered===true) {
+        tr[i].style.display = '';
+    }
+    else {
+        tr[i].style.display = 'none';
+    }
+  }
+ }
+
+</script>
+</html>
